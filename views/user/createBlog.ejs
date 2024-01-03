@@ -1,0 +1,83 @@
+<%- include("../header.ejs") %>
+
+    <div class="wrapper">
+
+        <%- include("navbar.ejs") %>
+
+    </div>
+
+
+    <div class="container my-3 mt-5">
+
+        <div class="row">
+            <div class="col-12 mt-5">
+                <h2 class="h4 text-white bg-info mb-3 p-4 rounded mt-5">Create new topic</h2>
+
+                <% if(posted!="" ) { %>
+
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= posted %> <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                    </div>
+
+
+                    <% } %>
+                        <% if(drafted!="" ) { %>
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <%= drafted %> <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                            </div>
+                            <% } %>
+                                <form action="" method="POST" class="mb-3" enctype="multipart/form-data">
+
+                                    <!-- enctype="multipart/form-data" -->
+                                    <div class="form-group mb-3">
+
+                                        <label for="topic">Title:</label>
+                                        <input type="text" class="form-control" id="title" name="title"
+                                            placeholder="Give your topic a title." required>
+                                        <input type="hidden" value="<%= user.id %>" name="userid">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="topic">Category:</label>
+                                        <select class="form-control" name="category" id="category">
+                                            <% category.forEach(data=> { %>
+                                                <option value="<%= data.id %>">
+                                                    <%= data.name %>
+                                                </option>
+                                                <% });%>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="comment">Content:</label>
+                                        <textarea class="form-control" name="content" rows="10" max
+                                            placeholder="Write your content here." required></textarea>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="formFile" class="form-label">Image if necessary</label>
+                                        <input class="form-control" type="file" id="formFile" name="picture"
+                                            accept="image/*">
+                                    </div>
+
+                                    <button type="submit" name="upload" class="btn btn-primary">Upload</button>
+                                    &nbsp;&nbsp;
+                                    <button type="submit" name="saveDraft" class="btn btn-warning">Save as
+                                        Draft</button> &nbsp;&nbsp;
+
+
+                                    <button type="reset" class="btn btn-danger">Reset</button>
+                                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <%- include("../footer.ejs") %>
+
+
+        </body>
+
+        </html>

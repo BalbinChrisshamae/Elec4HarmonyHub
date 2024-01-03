@@ -1,0 +1,47 @@
+<%- include("header") %>
+
+    <div class="main-wrap">
+        <div class="box-container">
+            <div class="img-box" data-aos="zoom-in" data-aos-duration="1000">
+
+            </div>
+            <div class="form-wrap">
+                <div class="top-website">
+                    <a href="/" class="website">Go to Website</a>
+                </div>
+                <div class="mid-container">
+                    <h2>Welcome To World Sound</h2>
+                    <h6>Login your Account</h6>
+                    <% if(typeof(alert)!="undefined" ) {%>
+                        <div style="padding: 5px; background-color:#FAA7A7; color:red;">
+                            <center>
+                                <%= alert %>
+                            </center>
+                        </div>
+                        <%}%>
+                            <form action="" class="form" method="POST">
+                                <label for="">Email</label></br>
+                                <input type="email" name="email" id="" placeholder="email" required value="m@gmail.com">
+                                </br></br>
+                                <label for="Password">Password</label></br>
+                                <input type="password" name="password" id="" placeholder="Your password" required
+                                    value="12345678">
+                                <br>
+                                <span><a href="/register" class="fg-pass">Create an Account</a></span>
+                                <br>
+                                <button type="submit" class="login-btn" name="signin">Sign In</button>
+                            </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </body>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+
+
+
+    </html>

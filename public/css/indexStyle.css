@@ -1,0 +1,15 @@
+body {
+    font-family: 'Poppins';
+    width: 100%;
+    height: auto;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../images/BlogsBG.jpeg');
+    background-attachment: fixed;
+    background-size: cover;
+    color: white;
+}
+
+.logo img {
+    margin-top: 5%;
+    height: 200px;
+    width: 350;
+}

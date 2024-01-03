@@ -1,0 +1,195 @@
+<%- include("../header.ejs") %>
+
+    <div class="wrapper">
+
+        <%- include("navbar.ejs") %>
+    </div>
+
+    <div class="container my-3 mt-5">
+        <div class="row">
+            <div class="col-12 mt-5">
+                <div class="bg-light mb-3 p-4 rounded mt-5">
+                    <h4>Profile</h4>
+
+                    <% if(drafted!="" ) { %>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <%= drafted %> <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                        </div>
+                        <% } %>
+
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                                        data-bs-target="#home" type="button" role="tab" aria-controls="home"
+                                        aria-selected="true">Posts</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                                        data-bs-target="#profile" type="button" role="tab" aria-controls="profile"
+                                        aria-selected="false">Drafts</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                    aria-labelledby="home-tab">
+                                    <br>
+
+
+                                    <% if(posted!="" ) { %>
+
+
+
+
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            <%= posted %> <button type="button" class="btn-close"
+                                                    data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+
+                                        <% } %>
+
+
+                                            <% if(userPosts.length==0) { %>
+                                                <center>
+                                                    <h4>No Data Available</h4>
+                                                </center>
+
+                                                <% } %>
+
+                                                    <% userPosts.forEach(blog=> { %>
+
+                                                        <div class="col">
+                                                            <div class="card zoom mb-3">
+                                                                <a href="/viewBlog/">
+                                                                    <div class="card-body">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-6">
+                                                                                <h6
+                                                                                    class="badge badge-light border text-dark rounded-pill px-3">
+                                                                                    <i class="far fa-circle"></i>
+                                                                                    <%= blog.category %>
+                                                                                </h6>
+                                                                            </div>
+                                                                            <div class="col-sm-6 text-end">
+                                                                                <i class="fa-solid fa-eye"></i>
+                                                                                <%= blog.totalView%> &nbsp; &nbsp;
+                                                                                    <i class="fa-solid fa-comment"></i>
+                                                                                    <%= blog.totalComments%>
+                                                                            </div>
+                                                                        </div>
+                                                                        <h5 class="card-title">
+                                                                            <%= blog.title%>
+                                                                        </h5>
+
+                                                                        <p class="card-text text-right font-italic">
+                                                                            <small class="text-muted">
+                                                                                <%= new
+                                                                                    Date(blog.created_at).toLocaleString('en-US',
+                                                                                    { year: 'numeric' , month: '2-digit'
+                                                                                    , day: '2-digit' , hour: 'numeric' ,
+                                                                                    minute: 'numeric' , hour12: true })
+                                                                                    %>
+
+                                                                            </small>
+                                                                        </p>
+
+                                                                        <div class="col text-end" id="actions">
+
+
+                                                                            <a href="/edit/<%= blog.id %>"
+                                                                                class="edit-button">
+                                                                                <button type="button"
+                                                                                    class="btn btn-success"><i
+                                                                                        class="fa-solid fa-pen-to-square"></i></button></a>&nbsp;&nbsp;&nbsp;
+                                                                            <a href="/delete/<%= blog.id %>"><button
+                                                                                    class="btn btn-danger"><i
+                                                                                        class="fa-solid fa-trash"></i></button></a>
+
+                                                                        </div>
+
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+
+                                                        <% });%>
+
+                                </div>
+                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <br>
+                                    <% if(drafts.length==0) { %>
+                                        <center>
+                                            <h4>No Data Available</h4>
+                                        </center>
+
+                                        <% } %>
+
+
+                                            <% drafts.forEach(blog=> { %>
+
+                                                <div class="col">
+                                                    <div class="card zoom mb-3">
+                                                        <a href="#">
+                                                            <div class="card-body">
+                                                                <div class="row">
+                                                                    <div class="col-sm-6">
+                                                                        <h6
+                                                                            class="badge badge-light border text-dark rounded-pill px-3">
+                                                                            <i class="far fa-circle"></i>
+                                                                            <%= blog.category %>
+                                                                        </h6>
+                                                                    </div>
+
+                                                                </div>
+                                                                <h5 class="card-title">
+                                                                    <%= blog.title%>
+                                                                </h5>
+
+                                                                <p class="card-text text-right font-italic"><small
+                                                                        class="text-muted">
+                                                                        <%= new
+                                                                            Date(blog.created_at).toLocaleString('en-US',
+                                                                            { year: 'numeric' , month: '2-digit' ,
+                                                                            day: '2-digit' , hour: 'numeric' ,
+                                                                            minute: 'numeric' , hour12: true }) %>
+
+                                                                    </small>
+                                                                </p>
+
+                                                                <div class="col text-end" id="actions">
+                                                                    <a href="/postDraft/<%= blog.id %>"
+                                                                        class="edit-button">
+                                                                        <button type="button"
+                                                                            class="btn btn-primary">Post Now
+                                                                        </button></a>&nbsp;&nbsp;&nbsp;
+                                                                    <a href="/edit/<%= blog.id %>" class="edit-button">
+                                                                        <button type="button" class="btn btn-success"><i
+                                                                                class="fa-solid fa-pen-to-square"></i></button></a>&nbsp;&nbsp;&nbsp;
+                                                                    <a href="/deleteDraft/<%= blog.id %>"><button
+                                                                            class="btn btn-danger"><i
+                                                                                class="fa-solid fa-trash"></i></button></a>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                                <% });%>
+
+
+
+                                </div>
+
+                            </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    </body>
+
+    </html>
