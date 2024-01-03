@@ -93,7 +93,7 @@ router.use("/userIndex", islogin);
 router.get("/userIndex", mainCon.getUserIndex);
 
 //admin
-router.use("/adminViewBlogs", islogin);
+router.use("/adminViewBlogs", isloginAdmin);
 router.get("/adminViewBlogs", mainCon.getAdminIndex);
 
 router.use("/createBlog", islogin);
