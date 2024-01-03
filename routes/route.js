@@ -92,6 +92,10 @@ router.post("/livesearch", mainCon.liveSearch);
 router.use("/userIndex", islogin);
 router.get("/userIndex", mainCon.getUserIndex);
 
+//admin
+router.use("/adminViewBlogs", islogin);
+router.get("/adminViewBlogs", mainCon.getAdminIndex);
+
 router.use("/createBlog", islogin);
 router.get("/createBlog", mainCon.createBlog);
 router.post("/createBlog", upload.single('picture'), mainCon.userPostBlog);

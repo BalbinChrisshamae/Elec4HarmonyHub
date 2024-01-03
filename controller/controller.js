@@ -129,6 +129,19 @@ exports.getUserIndex = (req, res) => {
 };
 
 
+//user
+exports.getAdminIndex = (req, res) => {
+
+    const sql = "SELECT p.*, c.name AS `category`, COALESCE(SUM(v.plusone), 0) AS totalView FROM post_tbl p INNER JOIN category_tbl c ON p.category_id = c.id LEFT JOIN views v ON p.id = v.postid WHERE p.status = 1 AND p.`delete_flag` = 0 GROUP BY p.id ORDER BY totalView desc LIMIT 3 ";
+    con.query(sql, (err, blogs) => {
+        if (err) {
+            res.send(err.message);
+            return;
+        }
+        res.render("admin/index", { title: "Admin Home", blogs, stripTags: striptags, url: req.url });
+    });
+};
+
 exports.createBlog = (req, res) => {
 
     const sql = "SELECT * FROM category_tbl";
