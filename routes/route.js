@@ -106,7 +106,7 @@ router.use("/recentlyDeleted", islogin);
 router.get("/recentlyDeleted", mainCon.recentlyDeleted);
 router.get('/deletePermanently/:id', mainCon.deletePermanently);
 router.get('/deleteDraft/:id', mainCon.deleteDraft);
-router.get('/postDraft/:id', mainCon.postDraft);
+router.get('/postDraft/:id', upload.single('picture'), mainCon.postDraft);
 
 
 
@@ -114,4 +114,13 @@ router.get('/postDraft/:id', mainCon.postDraft);
 
 router.post("/editProfile", uploadAvatar.single('avatar'), mainCon.editProfile);
 
+router.get('/viewBlog/:id', mainCon.retreiveBlog);
+router.get('/userViewBlog/:id', mainCon.userRetreiveBlog);
+router.post("/userLiveSearch", mainCon.userLiveSearch);
+router.get("/deleteComment/:id/:post_id", mainCon.deleteComment);
+router.get("/favorite/:id", mainCon.favorite);
+router.get("/unfavorite/:id", mainCon.unfavorite);
+router.post('/postComment', mainCon.postComment);
+router.get("/viewDraft/:id", mainCon.viewDraft);
+router.post("/postViewDraft", mainCon.postViewDraft);
 module.exports = router;

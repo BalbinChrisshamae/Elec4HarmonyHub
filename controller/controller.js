@@ -215,7 +215,7 @@ exports.userProfile = (req, res) => {
     const user = req.session.user;
     const user_id = user.id;
 
-    const sql = "SELECT p.*, c.name AS `category`, COALESCE(SUM(v.plusone), 0) AS totalView, COALESCE(COUNT(cm.id), 0) AS totalComments FROM post_tbl p INNER JOIN category_tbl c ON p.category_id = c.id LEFT JOIN views v ON p.id = v.postid LEFT JOIN comment_tbl cm ON p.id = cm.post_id WHERE p.status = 1 AND p.`delete_flag` = 0  AND p.user_id = ? GROUP BY p.id ORDER BY p.created_at"
+    const sql = "SELECT p.*, c.name AS `category`, COALESCE(SUM(v.plusone), 0) AS totalView, COALESCE(COUNT(cm.id), 0) AS totalComments FROM post_tbl p INNER JOIN category_tbl c ON p.category_id = c.id LEFT JOIN views v ON p.id = v.postid LEFT JOIN comment_tbl cm ON p.id = cm.post_id WHERE p.status = 1 AND p.`delete_flag` = 0  AND p.user_id = ? GROUP BY p.id ORDER BY p.created_at desc"
     con.query(sql, [user_id], (err, userPosts) => {
         if (err) {
             res.send(err.message);
@@ -223,7 +223,7 @@ exports.userProfile = (req, res) => {
         }
 
         // Second query (example): Fetch categories
-        const draft_sql = "SELECT * FROM post_tbl where status = 0 AND user_id= ?";
+        const draft_sql = "SELECT p.*, c.name AS `category` FROM post_tbl p INNER JOIN category_tbl c ON p.category_id = c.id WHERE p.status = 0 AND p.user_id = ? ORDER BY p.created_at desc";
         con.query(draft_sql, [user_id], (err, drafts) => {
             if (err) {
                 res.send(err.message);
@@ -419,3 +419,229 @@ exports.editProfile = async (req, res) => {
 
 
 };
+
+
+exports.retreiveBlog = (req, res) => {
+    const id = req.params.id;
+
+
+    const sql = "SELECT b.id,b.user_id,a.email, b.title,b.created_at,b.content from user_tbl a inner join post_tbl b on a.id = b.user_id WHERE b.id=?";
+    con.query(sql, [id], (err, results) => {
+        if (err) {
+            alert = err.message;
+        }
+
+        const comment_sql = "SELECT a.*,b.email, b.avatar FROM comment_tbl a inner join user_tbl b on a.user_id=b.id WHERE a.post_id=?";
+        con.query(comment_sql, [id], (err, comments) => {
+            if (err) {
+                alert = err.message;
+            }
+
+            res.render("viewBlog", { blog: results[0], comments, post_id: id });
+        });
+
+    });
+};
+
+exports.userLiveSearch = (req, res) => {
+    const search = req.body.query;
+    const sql = "SELECT p.*, c.name AS `category`, COALESCE(SUM(v.plusone), 0) AS totalView FROM  post_tbl p INNER JOIN category_tbl c ON p.category_id = c.id LEFT JOIN views v ON p.id = v.postid WHERE p.status = 1 AND p.`delete_flag` = 0 AND p.title LIKE ? GROUP BY p.id ORDER BY totalView DESC";
+    con.query(sql, ['%' + search + '%'], (err, blogs) => {
+        if (err) {
+            res.send(err.message);
+            return;
+        } else {
+            res.render("user/userLiveSearch", { blogs, stripTags: striptags });
+
+        }
+    });
+};
+
+
+exports.userRetreiveBlog = (req, res) => {
+    const id = req.params.id;
+    const user = req.session.user;
+    const user_id = user.id;
+
+
+    const sql = "SELECT b.id,b.user_id,a.email, b.title,b.created_at,b.content from user_tbl a inner join post_tbl b on a.id = b.user_id WHERE b.id=?";
+    con.query(sql, [id], (err, results) => {
+        if (err) {
+            alert = err.message;
+        }
+
+        const comment_sql = "SELECT a.*,b.email, b.avatar FROM comment_tbl a inner join user_tbl b on a.user_id=b.id WHERE a.post_id=?";
+        con.query(comment_sql, [id], (err, comments) => {
+            if (err) {
+                alert = err.message;
+            }
+
+            const favorite_sql = "SELECT * FROM favorite where post_id= ? and user_id=?";
+            con.query(favorite_sql, [id, user_id], (err, favorite) => {
+                if (err) {
+                    alert = err.message;
+                }
+                let alert = req.flash("success");
+                res.render("user/userViewBlog", { blog: results[0], comments, post_id: id, alert, favorite });
+            });
+
+        });
+    });
+};
+
+
+exports.deleteComment = (req, res) => {
+    const id = req.params.id;
+    const post_id = req.params.post_id;
+    const sql = "DELETE FROM comment_tbl WHERE id =?";
+    con.query(sql, [id], (err, results) => {
+        if (err) {
+            alert = err.message;
+        } else {
+            alert = "Comment Successfully Deleted";
+        }
+
+        req.flash("success", "Comment Successfully Deleted");
+        res.redirect(`/userViewBlog/${post_id}`);
+    });
+};
+
+
+exports.favorite = (req, res) => {
+    const id = req.params.id;
+    const user = req.session.user;
+    const user_id = user.id;
+
+
+    const sql = "INSERT INTO favorite (user_id, post_id) VALUES (?,?)";
+    con.query(sql, [user_id, id], (err, results) => {
+        if (err) {
+            console.log(err.message);
+        } else {
+            res.redirect(`/userViewBlog/${id}`);
+        }
+
+    });
+
+};
+
+
+exports.unfavorite = (req, res) => {
+    const id = req.params.id;
+    const user = req.session.user;
+    const user_id = user.id;
+
+
+    const sql = "DELETE FROM favorite where user_id = ? AND post_id = ?";
+    con.query(sql, [user_id, id], (err, results) => {
+        if (err) {
+            console.log(err.message);
+        } else {
+            res.redirect(`/userViewBlog/${id}`);
+        }
+
+    });
+
+};
+
+
+
+exports.postComment = (req, res) => {
+    const post_id = req.body.post_id;
+    const comment = req.body.comment;
+    const user = req.session.user;
+    const user_id = user.id;
+
+
+    const sql = "INSERT INTO comment_tbl (user_id, post_id, comment) VALUES (?, ?, ?)";
+    con.query(sql, [user_id, post_id, comment], (err, results) => {
+        if (err) {
+            console.log(err.message);
+        } else {
+            req.flash("success", "Comment Successfully Posted");
+            res.redirect(`/userViewBlog/${post_id}`);
+        }
+
+    });
+
+};
+
+
+exports.viewDraft = (req, res) => {
+    console.log(req.body);
+    const post_id = req.params.id;
+
+    const sql = "SELECT * FROM category_tbl";
+    con.query(sql, (err, category) => {
+        if (err) {
+            res.send(err.message);
+            return;
+        }
+
+        const retreive = "SELECT * FROM post_tbl where id = ?";
+        con.query(retreive, [post_id], (err, draft) => {
+            if (err) {
+                res.send(err.message);
+                return;
+            }
+
+
+            let posted = req.flash("success");
+            let drafted = req.flash("warning");
+            res.render("user/draft", { draft: draft[0], posted, category });
+        });
+
+    });
+};
+
+
+exports.postViewDraft = (req, res) => {
+    const post_id = req.body.post_id;
+    const isSaveDraftClicked = req.body.saveDraft !== undefined;
+    const isUploadClicked = req.body.upload !== undefined;
+
+    const title = req.body.title;
+    const content = req.body.content;
+    const category = req.body.category;
+    let sql = "";
+    let values = [];
+
+    if (isUploadClicked) {
+        if (req.file) {
+            console.log(req.file);
+
+            sql = "UPDATE post_tbl SET category_id = ?, title = ?, content = ?, status = ?, images = ? WHERE id = ?";
+            values = [category, title, content, 1, req.file.filename, post_id];
+        } else {
+            sql = "UPDATE post_tbl SET category_id = ?, title = ?, content = ?, status = ? WHERE id = ?";
+            values = [category, title, content, 1, post_id];
+        }
+
+        con.query(sql, values, (err, results) => {
+            if (err) {
+                console.log(err.message);
+            }
+            req.flash("success", "Blog Posted");
+            res.redirect("/userProfile");
+        });
+    } else {
+        if (req.file) {
+            console.log(req.file);
+
+            sql = "UPDATE post_tbl SET category_id = ?, title = ?, content = ?, status = ?, images = ? WHERE id = ?";
+            values = [category, title, content, 0, req.file.filename, post_id];
+        } else {
+            sql = "UPDATE post_tbl SET category_id = ?, title = ?, content = ?, status = ? WHERE id = ?";
+            values = [category, title, content, 0, post_id];
+        }
+
+        con.query(sql, values, (err, results) => {
+            if (err) {
+                console.log(err.message);
+            }
+            req.flash("warning", "Blog Updated and Saved as Draft");
+            res.redirect("/userProfile");
+        });
+    }
+};
+

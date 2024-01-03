@@ -60,7 +60,7 @@
 
                                                         <div class="col">
                                                             <div class="card zoom mb-3">
-                                                                <a href="/viewBlog/">
+                                                                <a href="/userViewBlog/<%= blog.id%>">
                                                                     <div class="card-body">
                                                                         <div class="row">
                                                                             <div class="col-sm-6">
@@ -129,7 +129,7 @@
 
                                                 <div class="col">
                                                     <div class="card zoom mb-3">
-                                                        <a href="#">
+                                                        <a href="/viewDraft/<%= blog.id %>">
                                                             <div class="card-body">
                                                                 <div class="row">
                                                                     <div class="col-sm-6">
@@ -190,6 +190,8 @@
 
     </div>
 
-    </body>
+    <%- include("../footer.ejs") %>
 
-    </html>
+        </body>
+
+        </html>

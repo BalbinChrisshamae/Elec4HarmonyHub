@@ -40,7 +40,8 @@
                                     </div>
                                     <div class="form-group mb-3">
                                         <label for="topic">Category:</label>
-                                        <select class="form-control" name="category" id="category">
+                                        <select class="form-select" aria-label="Default select example" name="category"
+                                            id="category">
                                             <% category.forEach(data=> { %>
                                                 <option value="<%= data.id %>">
                                                     <%= data.name %>
