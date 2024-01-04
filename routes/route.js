@@ -126,5 +126,18 @@ router.get("/favorite/:id", mainCon.favorite);
 router.get("/unfavorite/:id", mainCon.unfavorite);
 router.post('/postComment', mainCon.postComment);
 router.get("/viewDraft/:id", mainCon.viewDraft);
-router.post("/postViewDraft", mainCon.postViewDraft);
+router.post("/postViewDraft", upload.single('picture'), mainCon.postViewDraft);
+router.get("/editPost/:id", mainCon.viewEditPost);
+router.post("/updatePost", upload.single('picture'), mainCon.updatePost);
+router.get('/userViewDeleted/:id', mainCon.userViewDeleted);
+router.get("/favorites", mainCon.fetchFavorite);
+router.get("/unfavoritePost/:id", mainCon.unfavoritePost);
+
+
+router.get("/category", mainCon.fetchCategory);
+router.post("/livesearchCategory", mainCon.liveSearchCategory);
+
+
+router.get("/categoryUser", mainCon.fetchCategoryUser);
+router.post("/userLiveSearchCategory", mainCon.userLiveSearchCategory);
 module.exports = router;

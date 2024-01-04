@@ -382,7 +382,7 @@ exports.editProfile = async (req, res) => {
     const pass = req.body.pass;
     const hashpass = await argon2.hash(pass);
 
-    console.log(req.body);
+
 
     let sql = "";
     let values = [];
@@ -437,20 +437,33 @@ exports.editProfile = async (req, res) => {
 exports.retreiveBlog = (req, res) => {
     const id = req.params.id;
 
-
-    const sql = "SELECT b.id,b.user_id,a.email, b.title,b.created_at,b.content from user_tbl a inner join post_tbl b on a.id = b.user_id WHERE b.id=?";
-    con.query(sql, [id], (err, results) => {
+    const insert = "INSERT INTO views (plusone, postid) VALUES (?,?)";
+    con.query(insert, [1, id], (err, results) => {
         if (err) {
             alert = err.message;
         }
 
-        const comment_sql = "SELECT a.*,b.email, b.avatar FROM comment_tbl a inner join user_tbl b on a.user_id=b.id WHERE a.post_id=?";
-        con.query(comment_sql, [id], (err, comments) => {
+        const sql = "SELECT b.id,b.user_id,a.email, b.title,b.created_at,b.content, b.images from user_tbl a inner join post_tbl b on a.id = b.user_id WHERE b.id=?";
+        con.query(sql, [id], (err, results) => {
             if (err) {
                 alert = err.message;
             }
 
-            res.render("viewBlog", { blog: results[0], comments, post_id: id });
+            const comment_sql = "SELECT a.*,b.email, b.avatar FROM comment_tbl a inner join user_tbl b on a.user_id=b.id WHERE a.post_id=?";
+            con.query(comment_sql, [id], (err, comments) => {
+                if (err) {
+                    alert = err.message;
+                }
+
+                const views_sql = "SELECT COALESCE(SUM(plusone), 0) AS totalView  FROM views WHERE postid = ?";
+                con.query(views_sql, [id], (err, views) => {
+                    if (err) {
+                        alert = err.message;
+                    }
+
+                    res.render("viewBlog", { blog: results[0], comments, post_id: id, totalView: views[0].totalView});
+                });
+            });
         });
 
     });
@@ -476,30 +489,44 @@ exports.userRetreiveBlog = (req, res) => {
     const user = req.session.user;
     const user_id = user.id;
 
-
-    const sql = "SELECT b.id,b.user_id,a.email, b.title,b.created_at,b.content from user_tbl a inner join post_tbl b on a.id = b.user_id WHERE b.id=?";
-    con.query(sql, [id], (err, results) => {
+    const insert = "INSERT INTO views (plusone, postid) VALUES (?,?)";
+    con.query(insert, [1, id], (err, results) => {
         if (err) {
             alert = err.message;
         }
-
-        const comment_sql = "SELECT a.*,b.email, b.avatar FROM comment_tbl a inner join user_tbl b on a.user_id=b.id WHERE a.post_id=?";
-        con.query(comment_sql, [id], (err, comments) => {
+        const sql = "SELECT b.id,b.user_id,a.email, b.title,b.created_at,b.content, b.images from user_tbl a inner join post_tbl b on a.id = b.user_id WHERE b.id=?";
+        con.query(sql, [id], (err, results) => {
             if (err) {
                 alert = err.message;
             }
 
-            const favorite_sql = "SELECT * FROM favorite where post_id= ? and user_id=?";
-            con.query(favorite_sql, [id, user_id], (err, favorite) => {
+            const comment_sql = "SELECT a.*,b.email, b.avatar FROM comment_tbl a inner join user_tbl b on a.user_id=b.id WHERE a.post_id=?";
+            con.query(comment_sql, [id], (err, comments) => {
                 if (err) {
                     alert = err.message;
                 }
-                let alert = req.flash("success");
-                res.render("user/userViewBlog", { blog: results[0], comments, post_id: id, alert, favorite });
-            });
 
-        });
+                const favorite_sql = "SELECT * FROM favorite where post_id= ? and user_id=?";
+                con.query(favorite_sql, [id, user_id], (err, favorite) => {
+                    if (err) {
+                        alert = err.message;
+                    }
+                    const views_sql = "SELECT COALESCE(SUM(plusone), 0) AS totalView  FROM views WHERE postid = ?";
+                    con.query(views_sql, [id], (err, views) => {
+                        if (err) {
+                            alert = err.message;
+                        }
+
+                    let alert = req.flash("success");
+                    res.render("user/userViewBlog", { blog: results[0], comments, post_id: id, alert, favorite, totalView: views[0].totalView});
+                    });
+
+                });
+         });
+     });
+
     });
+    
 };
 
 
@@ -581,7 +608,7 @@ exports.postComment = (req, res) => {
 
 
 exports.viewDraft = (req, res) => {
-    console.log(req.body);
+
     const post_id = req.params.id;
 
     const sql = "SELECT * FROM category_tbl";
@@ -610,7 +637,7 @@ exports.viewDraft = (req, res) => {
 
 exports.postViewDraft = (req, res) => {
     const post_id = req.body.post_id;
-    const isSaveDraftClicked = req.body.saveDraft !== undefined;
+    const isSaveDraftClicked = req.body.updateDraft !== undefined;
     const isUploadClicked = req.body.upload !== undefined;
 
     const title = req.body.title;
@@ -621,7 +648,7 @@ exports.postViewDraft = (req, res) => {
 
     if (isUploadClicked) {
         if (req.file) {
-            console.log(req.file);
+            //onsole.log(req.file);
 
             sql = "UPDATE post_tbl SET category_id = ?, title = ?, content = ?, status = ?, images = ? WHERE id = ?";
             values = [category, title, content, 1, req.file.filename, post_id];
@@ -658,3 +685,222 @@ exports.postViewDraft = (req, res) => {
     }
 };
 
+
+
+exports.viewEditPost = (req, res) => {
+
+    const post_id = req.params.id;
+
+    const sql = "SELECT * FROM category_tbl";
+    con.query(sql, (err, category) => {
+        if (err) {
+            res.send(err.message);
+            return;
+        }
+
+        const retreive = "SELECT * FROM post_tbl where id = ?";
+        con.query(retreive, [post_id], (err, post) => {
+            if (err) {
+                res.send(err.message);
+                return;
+            }
+
+
+            let posted = req.flash("success");
+            let drafted = req.flash("warning");
+            res.render("user/editPost", { post: post[0], posted, category });
+        });
+
+    });
+};
+
+
+exports.updatePost = (req, res) => {
+   
+    const post_id = req.body.post_id;
+   
+
+    const title = req.body.title;
+    const content = req.body.content;
+    const category = req.body.category;
+    let sql = "";
+    let values = [];
+
+ 
+        if (req.file) {
+            //onsole.log(req.file);
+
+            sql = "UPDATE post_tbl SET category_id = ?, title = ?, content = ?, images = ? WHERE id = ?";
+            values = [category, title, content, req.file.filename, post_id];
+        } else {
+            sql = "UPDATE post_tbl SET category_id = ?, title = ?, content = ? WHERE id = ?";
+            values = [category, title, content, post_id];
+        }
+
+        con.query(sql, values, (err, results) => {
+            if (err) {
+                console.log(err.message);
+            }
+            req.flash("success", "Blog Updated");
+            res.redirect("/userProfile");
+        });
+ 
+};
+
+exports.userViewDeleted = (req, res) => {
+    const id = req.params.id;
+    const user = req.session.user;
+    const user_id = user.id;
+
+   
+        const sql = "SELECT b.id,b.user_id,a.email, b.title,b.created_at,b.content, b.images from user_tbl a inner join post_tbl b on a.id = b.user_id WHERE b.id=?";
+        con.query(sql, [id], (err, results) => {
+            if (err) {
+                alert = err.message;
+            }
+
+            const comment_sql = "SELECT a.*,b.email, b.avatar FROM comment_tbl a inner join user_tbl b on a.user_id=b.id WHERE a.post_id=?";
+            con.query(comment_sql, [id], (err, comments) => {
+                if (err) {
+                    alert = err.message;
+                }
+
+                const favorite_sql = "SELECT * FROM favorite where post_id= ? and user_id=?";
+                con.query(favorite_sql, [id, user_id], (err, favorite) => {
+                    if (err) {
+                        alert = err.message;
+                    }
+                    const views_sql = "SELECT COALESCE(SUM(plusone), 0) AS totalView  FROM views WHERE postid = ?";
+                    con.query(views_sql, [id], (err, views) => {
+                        if (err) {
+                            alert = err.message;
+                        }
+
+                    let alert = req.flash("success");
+                    res.render("user/viewDeleted", { blog: results[0], comments, post_id: id, alert, favorite, totalView: views[0].totalView});
+                    });
+
+                });
+         });
+     });
+};
+
+
+exports.fetchFavorite = (req, res) => {
+
+    const user = req.session.user;
+    const user_id = user.id;
+
+    const sql = "SELECT p.*, c.name AS `category`, COALESCE(SUM(v.plusone), 0) AS totalView, COALESCE(COUNT(cm.id), 0) AS totalComments FROM post_tbl p INNER JOIN category_tbl c ON p.category_id = c.id LEFT JOIN views v ON p.id = v.postid LEFT JOIN comment_tbl cm ON p.id = cm.post_id INNER JOIN favorite f ON p.id = f.post_id AND f.user_id = ? WHERE p.status = 1 AND p.`delete_flag` = 0 GROUP BY p.id ORDER BY p.created_at;"
+    con.query(sql, [user_id], (err, userPosts) => {
+        if (err) {
+            res.send(err.message);
+            return;
+        }
+
+        let posted = req.flash("success");
+
+        res.render("user/favorites", {
+            userPosts,
+            posted,
+            stripTags: striptags
+        });
+
+
+    });
+};
+
+
+exports.unfavoritePost = (req, res) => {
+    const id = req.params.id;
+    const user = req.session.user;
+    const user_id = user.id;
+
+
+    const sql = "DELETE FROM favorite where user_id = ? AND post_id = ?";
+    con.query(sql, [user_id, id], (err, results) => {
+        if (err) {
+            console.log(err.message);
+        } else {
+            res.redirect('/favorites');
+        }
+
+    });
+
+};
+
+
+exports.fetchCategory= (req, res) => {
+
+    const sql = "SELECT p.*, c.name AS `category`, COALESCE(SUM(v.plusone), 0) AS totalView FROM post_tbl p INNER JOIN category_tbl c ON p.category_id = c.id LEFT JOIN views v ON p.id = v.postid WHERE p.status = 1 AND p.`delete_flag` = 0 GROUP BY p.id ORDER BY totalView desc LIMIT 3 ";
+    con.query(sql, (err, blogs) => {
+        if (err) {
+            res.send(err.message);
+            return;
+        } else {
+            const cat = "SELECT * FROM category_tbl";
+            con.query(cat, (err, cat) => {
+                if (err) {
+                    res.send(err.message);
+                    return;
+                }
+                    res.render("category", { blogs, stripTags: striptags, cat });
+            });
+        }
+    });
+
+};
+
+
+exports.liveSearchCategory = (req, res) => {
+    const search = req.body.query;
+    const cat_id = req.body.cat_id;
+    const sql = "SELECT p.*, c.name AS `category`, COALESCE(SUM(v.plusone), 0) AS totalView FROM  post_tbl p INNER JOIN category_tbl c ON p.category_id = c.id LEFT JOIN views v ON p.id = v.postid WHERE p.status = 1 AND p.`delete_flag` = 0 AND p.title LIKE ? AND p.category_id = ? GROUP BY p.id ORDER BY totalView DESC";
+    con.query(sql, ['%' + search + '%', cat_id], (err, blogs) => {
+        if (err) {
+            res.send(err.message);
+            return;
+        } else {
+            res.render("livesearch", { blogs, stripTags: striptags });
+
+        }
+    });
+};
+
+
+
+exports.fetchCategoryUser= (req, res) => {
+
+    const sql = "SELECT p.*, c.name AS `category`, COALESCE(SUM(v.plusone), 0) AS totalView FROM post_tbl p INNER JOIN category_tbl c ON p.category_id = c.id LEFT JOIN views v ON p.id = v.postid WHERE p.status = 1 AND p.`delete_flag` = 0 GROUP BY p.id ORDER BY totalView desc LIMIT 3 ";
+    con.query(sql, (err, blogs) => {
+        if (err) {
+            res.send(err.message);
+            return;
+        } else {
+            const cat = "SELECT * FROM category_tbl";
+            con.query(cat, (err, cat) => {
+                if (err) {
+                    res.send(err.message);
+                    return;
+                }
+                    res.render("user/userCategory", { blogs, stripTags: striptags, cat, url: req.url });
+            });
+        }
+    });
+
+};
+
+
+exports.userLiveSearchCategory = (req, res) => {
+    const search = req.body.query;
+    const cat_id = req.body.cat_id;
+    const sql = "SELECT p.*, c.name AS `category`, COALESCE(SUM(v.plusone), 0) AS totalView FROM  post_tbl p INNER JOIN category_tbl c ON p.category_id = c.id LEFT JOIN views v ON p.id = v.postid WHERE p.status = 1 AND p.`delete_flag` = 0 AND p.title LIKE ? AND p.category_id = ? GROUP BY p.id ORDER BY totalView DESC";
+  con.query(sql, ['%' + search + '%', cat_id], (err, blogs) => {
+        if (err) {
+            console.log(err.message);
+        } else {
+            res.render("user/userLiveSearch", { blogs, stripTags: striptags });
+
+        }
+    });
+};

@@ -6,48 +6,28 @@
 
 
 
-            <!-- carouselstart  -->
-            <div id="demo" class="carousel slide" style="width: 100%" data-ride="carousel">
-
-                <!-- Indicators -->
-                <ul class="carousel-indicators">
-                    <li data-target="#demo" data-slide-to="0" class="active"></li>
-                    <li data-target="#demo" data-slide-to="1"></li>
-                    <li data-target="#demo" data-slide-to="2"></li>
-                </ul>
-
-                <!-- The slideshow -->
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="images/background1.jpg" alt="Piano">
-
-                    </div>
-                    <div class="carousel-item">
-                        <img src="images/background2.jpg" alt="guitar">
-
-                    </div>
-                    <div class="carousel-item">
-                        <img src="images/background3.jpg" alt="Guitar">
-                    </div>
-                </div>
-
-                <!-- Left and right controls -->
-                <a class="carousel-control-prev" href="#demo" data-slide="prev">
-                    <span class="carousel-control-prev-icon" style="background-color: #000000;"></span>
-                </a>
-                <a class="carousel-control-next" href="#demo" data-slide="next">
-                    <span class="carousel-control-next-icon" style="background-color: #000000;"></span>
-                </a>
-
-            </div>
+           
 
 
-            <!-- carousel end  -->
 
 
             <!-- searchbar start -->
 
             <div class="container-fluid" style="margin-top: 150px;">
+
+                <center>
+                    <div class="col-5 form-group mb-3" mx-auto>
+                        <label for="topic">Category:</label>
+                        <select class="form-select" aria-label="Default select example" name="category"
+                            id="category">
+                            <% cat.forEach(data=> { %>
+                                <option value="<%= data.id %>">
+                                    <%= data.name %>
+                                </option>
+                                <% });%>
+                        </select>
+                    </div></center>
+        
 
                 <div class="search_wrap search_wrap_6">
                     <div class="search_box">
@@ -121,28 +101,35 @@
 
     <%- include("../footer.ejs") %>
 
-        <script>
-            $(document).ready(function () {
-                $("#search").keyup(function () {
-                    var search = $(this).val();
-                    $.ajax({
-                        url: "/userLiveSearch",
-                        method: "POST",
-                        data: {
-                            query: search
-                        },
-                        success: function (response) {
-                            $('#livesearch').html(response);
-                        }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            console.log("Error Thrown: " + errorThrown);
-                            console.log("Text Status: " + textStatus);
-                            console.log("XMLHttpRequest: " + XMLHttpRequest);
-                            console.warn(XMLHttpRequest.responseText)
-                        }
-                    })
+
+    <script>
+        $(document).ready(function () {
+            $("#search").keyup(function () {
+                var search = $(this).val();
+                var cat_id =$("#category").val();
+               
+                $.ajax({
+                    url: "/userLiveSearchCategory",
+                    method: "POST",
+                    data: {
+                        query: search,
+                        cat_id: cat_id
+                    },
+                    success: function (response) {
+                        $('#livesearch').html(response);
+                    }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log("Error Thrown: " + errorThrown);
+                        console.log("Text Status: " + textStatus);
+                        console.log("XMLHttpRequest: " + XMLHttpRequest);
+                        console.warn(XMLHttpRequest.responseText)
+                    }
                 })
-            });
-        </script>
+            })
+        });
+    </script>
+
+ 
+
         </body>
 
         </html>

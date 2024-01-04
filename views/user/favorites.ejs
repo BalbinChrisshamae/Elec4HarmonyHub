@@ -8,7 +8,7 @@
     <div class="container my-3 mt-5">
         <div class="row">
             <div class="col-12 mt-5">
-                <h2 class="h4 text-white bg-info mb-3 p-4 rounded mt-5">Recently Deleted</h2>
+                <h2 class="h4 text-white bg-info mb-3 p-4 rounded mt-5">Favorites</h2>
                 <div class="bg-light mb-3 p-4 rounded mt-2">
 
                     <br>
@@ -38,7 +38,7 @@
 
                                         <div class="col">
                                             <div class="card zoom mb-3">
-                                                <a href="/userViewDeleted/<%= blog.id %>">
+                                               <a href="/userViewBlog/<%= blog.id%>">
                                                     <div class="card-body">
                                                         <div class="row">
                                                             <div class="col-sm-6">
@@ -70,12 +70,9 @@
                                                         </p>
 
                                                         <div class="col text-end" id="actions">
-                                                            <a href="/restoreBlog/<%= blog.id %>" class="edit-button">
-                                                                <button type="button" class="btn btn-success"><i
-                                                                        class="fa-solid fa-arrow-rotate-left"></i></button></a>&nbsp;&nbsp;&nbsp;
-                                                            <a href="/deletePermanently/<%= blog.id %>"><button
-                                                                    class="btn btn-danger"><i
-                                                                        class="fa-solid fa-trash"></i></button></a>
+                                                           
+                                                            <h4><a href="/unfavoritePost/<%= blog.id %>"><i class="fa-solid fa-heart"
+                                                                style="color:red"></i></a></h4>
 
                                                         </div>
 

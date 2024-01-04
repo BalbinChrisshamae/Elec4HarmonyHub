@@ -21,7 +21,7 @@
                 <ul>
                     <li><a href="/" class="btn-active">Home</a></li>
                     <li><a href="/">About Us</a></li>
-                    <li><a href="/">Categories</a></li>
+                    <li><a href="/category">Categories</a></li>
                 </ul>
             </div><br />
         </nav>
@@ -111,6 +111,16 @@
                                 <h5 class="card-title">
                                     <%= blog.title%>
                                 </h5>
+
+                                <%if(blog.images !=null || blog.images != '' ){ %>
+                                    <div class="col-12 mb-3 text-center">
+                                       
+                                            <img class="img-fluid" style="border-radius: 10px; height: 150px;"
+                                                src="/postImages/<%= blog.images %>" alt="" srcset=""> <br>
+                                            
+                                    
+                                    </div>
+                                <% } %>
                                 <p class="card-text">
                                     <%= stripTags(blog.content) %>
                                 </p>

@@ -16,15 +16,6 @@
                     <div class="col-sm-6 text-end">
                         <i class="fa-solid fa-eye"></i>
                         <%=totalView%> &nbsp; &nbsp;
-
-                        <% if(favorite.length==0) { %>
-                            <a href="/favorite/<%= post_id %>"><i class="fa-solid fa-heart" style="color:gray"></i></a>
-
-                            <% }else { %>
-                                <a href="/unfavorite/<%= post_id %>"><i class="fa-solid fa-heart"
-                                        style="color:red"></i></a>
-
-                                <% }%>
                     </div>
                 </div>
 
@@ -140,19 +131,7 @@
                             <% });%>
 
 
-                                <form action="/postComment" method="POST" class="mb-3">
-                                    <div class="form-group">
-                                        <label for="comment">Reply to this post:</label>
-
-                                        <input type="hidden" value="<%= post_id %>" name="post_id">
-                                        <textarea class="form-control" id="comment" name="comment" rows="10"
-                                            placeholder="Write your comment here." required></textarea>
-                                    </div>
-                                    <br>
-                                    <button type="submit" name="submitcomment" class="btn btn-success">Comment</button>
-                                    <button type="reset" class="btn btn-danger">Reset</button>
-                                </form>
-
+                            <a href="/deletePermanently/<%= post_id %>"><button type="submit" name="upload" class="btn btn-danger">Delete Permanently</button></a>
 
             </div>
         </div>

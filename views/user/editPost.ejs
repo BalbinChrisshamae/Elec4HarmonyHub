@@ -11,7 +11,7 @@
 
         <div class="row">
             <div class="col-12 mt-5">
-                <h2 class="h4 text-white bg-info mb-3 p-4 rounded mt-5">Update Draft</h2>
+                <h2 class="h4 text-white bg-info mb-3 p-4 rounded mt-5">Update Post</h2>
 
                 <% if(posted!="" ) { %>
 
@@ -23,14 +23,14 @@
 
                     <% } %>
 
-                        <form action="/postViewDraft" method="POST" class="mb-3" enctype="multipart/form-data">
+                        <form action="/updatePost" method="POST" class="mb-3" enctype="multipart/form-data">
 
                             <!-- enctype="multipart/form-data" -->
                             <div class="form-group mb-3">
-                                <input type="hidden" class="form-control" id="post_id" name="post_id" value="<%= draft.id%>">
+                                <input type="hidden" class="form-control" id="post_id" name="post_id" value="<%= post.id%>">
                                 <label for="topic">Title:</label>
                                 <input type="text" class="form-control" id="title" name="title"
-                                    placeholder="Give your topic a title." required value="<%= draft.title %>">
+                                    placeholder="Give your topic a title." required value="<%= post.title %>">
 
                             </div>
                             <div class="form-group mb-3">
@@ -38,7 +38,7 @@
                                 <select class="form-select" aria-label="Default select example" name="category"
                                     id="category">
                                     <% category.forEach(data=> { %>
-                                        <option value="<%= data.id %>" <%if(data.id==draft.category_id){ %> selected
+                                        <option value="<%= data.id %>" <%if(data.id==post.category_id){ %> selected
                                             <% } %>>
                                                 <%= data.name %>
                                         </option>
@@ -48,17 +48,17 @@
                             <div class="form-group mb-3">
                                 <label for="comment">Content:</label>
                                 <textarea class="form-control" name="content" rows="10" max
-                                    placeholder="Write your content here." required><%= draft.content %></textarea>
+                                    placeholder="Write your content here." required><%= post.content %></textarea>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="formFile" class="form-label">Image if necessary</label>
 
                                 <div class="col-sm-12 mx-auto mb-5">
-                                    <%if(draft.images !=null ){ %>
+                                    <%if(post.images !=null ){ %>
                                         <div class="col-sm-6 mx-auto mb-5">
                                             <center>
                                                 <img class="img-fluid" style="border-radius: 10px; height: 150px;"
-                                                    src="/postImages/<%= draft.images %>" alt="" srcset=""> <br>
+                                                    src="/postImages/<%= post.images %>" alt="" srcset=""> <br>
                                                 <label for="formFile" class="form-label">Initial
                                                     Image</label>
                                             </center>
@@ -69,12 +69,8 @@
                                 <input class="form-control" type="file" id="formFile" name="picture" accept="image/*">
                             </div>
 
-                            <button type="submit" name="upload" class="btn btn-primary">Upload</button>
-                            &nbsp;&nbsp;
-                            <button type="submit" name="updateDraft" class="btn btn-warning">Update
-                                Draft</button> &nbsp;&nbsp;
-
-
+                            <button type="submit" name="upload" class="btn btn-primary">Update</button>
+                        
 
                         </form>
             </div>

@@ -30,7 +30,18 @@
     <div class="container mt-5">
         <div class="row mt-5">
             <div class="col-12 mt-5">
-                <h2 class="h4 text-white bg-info mb-0 p-4 rounded-top mt-5">Post Details</h2>
+                <div class="row h4 text-white bg-info mb-0 p-4 rounded-top mt-5">
+                    <div class="col-sm-6">
+                        Post Details
+
+                    </div>
+                    <div class="col-sm-6 text-end">
+
+                        <i class="fa-solid fa-eye"></i>
+                        <%=totalView%>
+                        
+                    </div>
+                </div>
 
 
 
@@ -66,6 +77,16 @@
 
                             </td>
                             <td>
+                                <%if(blog.images !=null || blog.images != '' ){ %>
+                                    <div class="col-12 mb-3 mt-2 text-center">
+                                       
+                                            <img class="img-fluid" style="border-radius: 10px; height: 230px;"
+                                                src="/postImages/<%= blog.images %>" alt="" srcset=""> <br>
+                                            
+                                   
+                                    </div>
+                                <% } %>
+                               
                                 <p>
                                     <%= blog.content%>
                                 </p>

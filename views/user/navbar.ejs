@@ -19,7 +19,7 @@
                         <a class="dropdown-item" href="/userProfile">
                             <%= user.email %>
                         </a>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="/favorites">
                             Favorites
                         </a>
                         <a class="dropdown-item" href="/recentlyDeleted">
@@ -40,7 +40,8 @@
                         } } %>
                         >Home</a>
             </li>
-            <li><a href="#">Category</a></li>
+            <li><a href="/categoryUser" <% if(typeof(url)!="undefined" ){ if (url==='/categoryUser' ) { %>class="btn-active"
+                <% } } %>>Category</a></li>
             <li><a href="/createBlog" <% if(typeof(url)!="undefined" ){ if (url==='/creteBlog' ) { %>class="btn-active"
                     <% } } %>>Add Post
                 </a></li>
