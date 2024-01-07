@@ -84,6 +84,10 @@ router.post("/login", mainCon.postlogin);
 
 router.post("/livesearch", mainCon.liveSearch);
 
+router.get("/about", (req, res) => {
+    res.render("about");
+});
+
 
 
 
@@ -134,6 +138,9 @@ router.post("/updatePost", upload.single('picture'), mainCon.updatePost);
 router.get('/userViewDeleted/:id', mainCon.userViewDeleted);
 router.get("/favorites", mainCon.fetchFavorite);
 router.get("/unfavoritePost/:id", mainCon.unfavoritePost);
+
+router.get("/about", mainCon.fetchAbout);
+
 
 
 router.get("/category", mainCon.fetchCategory);

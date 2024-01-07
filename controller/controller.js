@@ -170,6 +170,9 @@ exports.getAdminIndex = (req, res) => {
     });
 };
 
+exports.fetchAbout = (req, res) =>{
+    res.render("about");
+};
 
 exports.getPost = (req,res)=>{
 const sql = 'SELECT * FROM post_tbl';
