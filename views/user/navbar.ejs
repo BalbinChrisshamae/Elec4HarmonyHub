@@ -9,13 +9,13 @@
         </div>
         <div class="right">
             <ul>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown"style="margin-right:45px;">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-                        <img src="/userAvatar/<%= user.avatar %>" width="40" height="40" class="rounded-circle" />
+                        <img src="/userAvatar/<%= user.avatar %>"  width="40" height="40" class="rounded-circle" />
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <div class="dropdown-menu dropdown-menu-start"  aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="/userProfile">
                             <%= user.email %>
                         </a>
