@@ -192,6 +192,7 @@ con.query(sql, (err, results)=>{
     
 });
 
+
     
 }
 exports.createBlog = (req, res) => {
