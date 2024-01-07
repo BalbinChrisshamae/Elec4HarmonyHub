@@ -42,52 +42,70 @@
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item active">List of Post</li>
                     </ol>
-                    
+
                     <div class="card mb-4">
-                        
+
                         <div class="card-body">
-                        <div class="form-group">
-                                  <div class="col-sm-12 d-flex">
-                                    <button
-                                      class="btn btn-success mx-auto mx-md-0 text-white"  data-bs-toggle="modal" data-bs-target="#AddModal" data-bs-whatever="@mdo">
-                                      + Add New 
+                            <div class="form-group">
+                                <div class="col-sm-12 d-flex">
+                                    <button class="btn btn-success mx-auto mx-md-0 text-white" data-bs-toggle="modal"
+                                        data-bs-target="#AddModal" data-bs-whatever="@mdo">
+                                        + Add New
                                     </button>
 
-                                  </div><br>
-                            <table id="datatablesSimple">
-                                <thead>
+                                </div><br>
+                                <table id="datatablesSimple">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Date Created</th>
+                                            <th>User</th>
+                                            <th>Title</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Date Created</th>
-                                        <th>User</th>
-                                        <th>Title</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <% if(results !=='undefined' ){%>
+                                            <% results.forEach(post=>{%>
+                                                <td>
+                                                    <%=post.id%>
+                                                </td>
+                                                <td>
+                                                    <%= post.created_at.toLocaleDateString('en-US', { year: 'numeric' ,
+                                                        month: 'long' , day: 'numeric' }) %>
+                                                </td>
+                                                <td>
+                                                    <% user_results.forEach(user=>{%>
+                                                        <% if(post.user_id==user.id){%>
+                                                            <%=user.firstname%>
+                                                            <%=user.lastname%>
+                                                                <%}%>
+                                                                <%});%>
+                                                </td>
+
+                                                <td><%=post.title%></td>
+                                                <td></td>
+                                                <td align="center">
+                                                    <a class="btn btn-primary" href="">Edit</a>
+                                                    <button type="button" class="btn btn-danger" data-target="#editpost"
+                                                        data-toggle="modal" onclick="">Delete</a>
+                                                </td>
+
                                     </tr>
-                                </thead>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td ></td>
-                                        <td></td>
-                                        <td align="center">
-                                          <a class="btn btn-primary" href="">Edit</a>
-                                          <button type="button" class="btn btn-danger" data-target="#editpost" data-toggle="modal" onclick="">Delete</a>
-                                        </td>
-                                    </tr>
-                                    
-                                    
-                                    <tr>
-                                        <td colspan="6">No Record found.</td>
-                                    </tr>
-                               
-                                <tbody>
-                                </tbody>
-                            </table>
+                                    <%});%>
+                                        
+                                            <%}%>
+                                                <tr>
+                                                    <td colspan="6">No Record found.</td>
+                                                </tr>
+
+                                                <tbody>
+                                                </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
             </main>
         </div>
     </div>
@@ -104,7 +122,7 @@
             new simpleDatatables.DataTable('#datatablesSimple');
         });
     </script>
-    
+
     </body>
 
     </html>

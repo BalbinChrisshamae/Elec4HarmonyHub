@@ -172,7 +172,27 @@ exports.getAdminIndex = (req, res) => {
 
 
 exports.getPost = (req,res)=>{
-    res.render('admin/post');
+const sql = 'SELECT * FROM post_tbl';
+
+con.query(sql, (err, results)=>{
+    if (err) {
+        res.send(err.message);
+        return;
+    }
+
+    const sql_user = 'SELECT * FROM user_tbl ';
+
+    con.query(sql_user, (err2,user_results)=>{
+        if (err) {
+            res.send(err.message);
+            return;
+        }
+        res.render('admin/post', {results,user_results});
+    })
+    
+});
+
+    
 }
 exports.createBlog = (req, res) => {
 
