@@ -1,0 +1,159 @@
+<%- include("header.ejs") %>
+
+    <div class="wrapper">
+        <nav class="navbar fixed-top">
+            <div class="top_nav">
+                <div class="left">
+                    <br>
+                    <span><img src="/images/sound.gif" height="80px" width="80px"></span>
+                    <div class="logo">
+                        <p><span>Harmony</span>Hub</p>
+                    </div>
+                </div>
+                <div class="right">
+                    <ul>
+                        <li><a href="/login" style="text-decoration:none;">LogIn</a></li>
+                        <li><a href="/register" style="text-decoration:none;">SignUp</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bottom_nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about" class="btn-active">About Us</a></li>
+                    <li><a href="/" >Categories</a></li>
+                </ul>
+            </div><br />
+        </nav>
+
+        <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <title>About Us</title>
+
+    <style type="text/css">
+     @import url("https://fonts.googleapis.com/css?family=Josefin+Sans|Mountains+of+Christmas&display=swap");
+      * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+
+
+.team-row{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 40px 0;
+}
+
+.member{
+    flex: 1 1 250px;
+    margin: 20px;
+    text-align: center;
+    padding: 20px 10px;
+    cursor: pointer;
+    max-width: 300px;
+    transition: all 0.3s;
+}
+
+.member:hover{
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transform: translateY(-20px);
+}
+
+.member img{
+    display: block;
+    width: 150px; height: 150px;
+    object-fit: cover;
+    border:4px solid #d4ba93;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.member h2{
+    text-transform: uppercase;
+    font-size: 24px;
+    color: #494949;
+    margin: 15px 0;
+}
+
+.member p{
+    font-size: 15px;
+    color: #838383;
+    line-height: 1.6;
+}
+    </style>
+  </head>
+  <h1 class="title">our team</h1>
+  <div class="team-row">
+      <div class="member">
+          <img src="images/chrissha.jpg" alt="">
+          <h2>Chrissha Balbin</h2>
+          <p>I'm Chrissha Mae E. Balbin, a 20-year-old fourth-year BSIT student. I'm someone who sets goals and is committed to completing every task assigned to me. I focus on delivering quality work and good performance, aiming to better myself each day. Additionally, I'm eager to apply my school learnings, acquire new skills, and demonstrate them in my future job.</p>
+      </div>
+      <div class="member">
+          <img src="images/royce.jpg" alt="">
+          <h2>Royce Hortaleza</h2>
+          <p>An innovative and passionate individual with a strong proficiency in web design and problem-solving skills for developing dynamic programs and interactive database-driven websites, as well as participate in requirement analysis and technical management.</p>
+      </div>
+      <div class="member">
+          <img src="images/trisha.jpg" alt="">
+          <h2>Trisha Servito</h2>
+          <p>I'm, Trisha Servito, I'm 22 years of age. I was born on November 21, 2001, in Urdaneta City, Pangasinan. As a fourth-year Bachelor of Science in Information Technology (BSIT) student at Pangasinan State University Urdaneta Campus, I am concurrently managing an online business on TikTok named Wall Art Depot. Our shop specializes in the sale of anime-themed wall art decorations, catering to the diverse interests of anime enthusiasts.</p>
+      </div>
+      <div class="member">
+        <img src="images/deoff.png" alt="">
+        <h2>Deoff Torrado</h2>
+        <p>I'm Deoff R. Torrado, 21 years old. I was born on October 28, 2002 in Urdaneta City Pangasinan. I love playing instruments, video games, eating, sleeping, traveling and playing sports. I am currently a 4th year BSIT college student in Pangasinan State University Urdaneta City Campus. My strength is collaborations and observations</p>
+    </div>
+
+    </div>
+</div> <!-- Closing the wrapper div -->
+
+    
+
+    <%- include("footer.ejs") %>
+
+
+        <script>
+            $(document).ready(function () {
+                $("#search").keyup(function () {
+                    var search = $(this).val();
+                    var cat_id =$("#category").val();
+                   
+                    $.ajax({
+                        url: "/liveSearchCategory",
+                        method: "POST",
+                        data: {
+                            query: search,
+                            cat_id: cat_id
+                        },
+                        success: function (response) {
+                            $('#livesearch').html(response);
+                        }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            console.log("Error Thrown: " + errorThrown);
+                            console.log("Text Status: " + textStatus);
+                            console.log("XMLHttpRequest: " + XMLHttpRequest);
+                            console.warn(XMLHttpRequest.responseText)
+                        }
+                    })
+                })
+            });
+        </script>
+
+
+        </body>
+
+        </html>
