@@ -159,44 +159,69 @@ exports.getAdminIndex = (req, res) => {
                         res.send(err.message);
                         return;
                     }
-                    res.render("admin/index", { title: "Admin Home", blogs, stripTags: striptags, url: req.url, category_num: category_num, user_num:user_num, post_num:post_num });
+                    res.render("admin/index", { title: "Admin Home", blogs, stripTags: striptags, url: req.url, category_num: category_num, user_num: user_num, post_num: post_num });
                 });
 
-               
+
             });
-            
+
         });
 
     });
 };
 
-exports.fetchAbout = (req, res) =>{
-    res.render("about");
-};
+exports.delete = (req, res) => {
+    const postId = req.params.id;
 
-exports.getPost = (req,res)=>{
-const sql = 'SELECT * FROM post_tbl';
-
-con.query(sql, (err, results)=>{
-    if (err) {
-        res.send(err.message);
-        return;
-    }
-
-    const sql_user = 'SELECT * FROM user_tbl ';
-
-    con.query(sql_user, (err2,user_results)=>{
+    // Delete associated comments first
+    const deleteCommentsSql = 'DELETE FROM comment_tbl WHERE post_id = ?';
+    con.query(deleteCommentsSql, [postId], (err, results) => {
         if (err) {
             res.send(err.message);
             return;
         }
-        res.render('admin/post', {results,user_results});
-    })
-    
-});
+
+        // Now delete the post
+        const deletePostSql = 'DELETE FROM post_tbl WHERE id = ?';
+        con.query(deletePostSql, [postId], (err, results) => {
+            if (err) {
+                res.send(err.message);
+                return;
+            }
+
+            exports.getPost(req, res);
+        });
+    });
+};
 
 
-    
+exports.fetchAbout = (req, res) => {
+    res.render("about");
+};
+
+exports.getPost = (req, res) => {
+    const sql = 'SELECT * FROM post_tbl';
+
+    con.query(sql, (err, results) => {
+        if (err) {
+            res.send(err.message);
+            return;
+        }
+
+        const sql_user = 'SELECT * FROM user_tbl ';
+
+        con.query(sql_user, (err2, user_results) => {
+            if (err) {
+                res.send(err.message);
+                return;
+            }
+            res.render('admin/post', { results, user_results });
+        })
+
+    });
+
+
+
 }
 exports.createBlog = (req, res) => {
 

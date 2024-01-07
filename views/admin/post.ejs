@@ -80,28 +80,28 @@
                                                         <% if(post.user_id==user.id){%>
                                                             <%=user.firstname%>
                                                             <%=user.lastname%>
-                                                                <%}%>
-                                                                <%});%>
+                                                        <%}%>
+                                                    <%});%>
                                                 </td>
-
-                                                <td><%=post.title%></td>
+                                                <td>
+                                                    <%=post.title%>
+                                                </td>
                                                 <td></td>
                                                 <td align="center">
-                                                    <a class="btn btn-primary" href="">Edit</a>
-                                                    <button type="button" class="btn btn-danger" data-target="#editpost"
-                                                        data-toggle="modal" onclick="">Delete
+                                                    <a class="dropdown-item" href="javascript:void(0);"
+                                                        onclick="deletePost(event, '<%= post.id %>')">Delete</a>
                                                 </td>
 
                                     </tr>
                                     <%});%>
-                                        
-                                            <%}%>
-                                                <tr>
-                                                    <td colspan="6">No Record found.</td>
-                                                </tr>
 
-                                                <tbody>
-                                                </tbody>
+                                        <%}%>
+                                            <tr>
+                                                <td colspan="6">No Record found.</td>
+                                            </tr>
+
+                                            <tbody>
+                                            </tbody>
                                 </table>
                             </div>
                         </div>
@@ -121,7 +121,33 @@
         document.addEventListener('DOMContentLoaded', function () {
             new simpleDatatables.DataTable('#datatablesSimple');
         });
+
+        function deletePost(event, id) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your post has been deleted.",
+                        icon: "success"
+                    }).then(() => {
+                        // Redirect to the delete route with the blog ID
+                        window.location.href = '/admin/delete/' + id;
+                    });
+                }
+            });
+        }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     </body>
 

@@ -101,6 +101,7 @@ router.use("/adminViewBlogs", isloginAdmin);
 router.get("/adminViewBlogs", mainCon.getAdminIndex);
 router.use("/admin/post", isloginAdmin);
 router.get("/admin/post", mainCon.getPost);
+router.get("/admin/delete/:id", isloginAdmin, mainCon.delete);
 
 router.use("/createBlog", islogin);
 router.get("/createBlog", mainCon.createBlog);
